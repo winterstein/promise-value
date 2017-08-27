@@ -1,0 +1,25 @@
+{
+  "name": "promise-value",
+  "version": "1.0.0",
+  "description": "Wrap Promise to carry a promise and (if known) a value -- this makes it easy to bridge between async promise-based code, and single-thread code.",
+  "main": "promise-value.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/winterstein/promise-value.git"
+  },
+  "keywords": [
+    "Promise",
+    "single-thread",
+    "value",
+    "wrapper"
+  ],
+  "author": "@winterstein",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/winterstein/promise-value/issues"
+  },
+  "homepage": "https://github.com/winterstein/promise-value#readme"
+}
