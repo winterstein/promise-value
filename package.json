@@ -2,10 +2,7 @@
   "name": "promise-value",
   "version": "1.0.0",
   "description": "Wrap Promise to carry a promise and (if known) a value -- this makes it easy to bridge between async promise-based code, and single-thread code.",
-  "main": "promise-value.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
+   "main": "./binpromise-value.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/winterstein/promise-value.git"
@@ -21,5 +18,20 @@
   "bugs": {
     "url": "https://github.com/winterstein/promise-value/issues"
   },
-  "homepage": "https://github.com/winterstein/promise-value#readme"
+  "homepage": "https://github.com/winterstein/promise-value#readme",
+  "babel": {
+    "presets": [
+      "es2015"
+    ]
+  },
+  "devDependencies": {
+    "babel-cli": "^6.24.0",
+    "babel-preset-es2015": "^6.24.0",
+    "babel-register": "^6.24.0"
+  },
+  "scripts": {
+    "build": "babel src --out-dir bin",
+    "watch": "babel src --out-dir bin --watch",
+    "prepublish": "npm run build"
+  }
 }
