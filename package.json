@@ -2,7 +2,7 @@
   "name": "promise-value",
   "version": "1.0.0",
   "description": "Wrap Promise to carry a promise and (if known) a value -- this makes it easy to bridge between async promise-based code, and single-thread code.",
-   "main": "./binpromise-value.js",
+  "main": "./binpromise-value.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/winterstein/promise-value.git"
