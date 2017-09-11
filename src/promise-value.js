@@ -11,7 +11,7 @@
 function pv(valueOrPromise) {
 	if (valueOrPromise===null || valueOrPromise===undefined) {
 		return {
-			promise: Promise.fail(new Error("null value"))
+			promise: Promise.reject(new Error("null value"))
 		};
 	}
 	// NB: Promise.resolve() can be used with Promises without nesting	

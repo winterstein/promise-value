@@ -9,3 +9,14 @@ SJTest.run({name:'PromiseValue: value',
 	}
 
 });
+
+SJTest.run({name:'PromiseValue: reject (fail)',
+
+function() {
+	let a = pv(undefined);
+	assert( ! a.value, a);
+	assert(a.promise.then);
+	return "OK";
+}
+
+});
