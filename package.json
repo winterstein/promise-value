@@ -1,6 +1,6 @@
 {
   "name": "promise-value",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "A tiny wrapper for Promise to carry a promise and (if known) a value -- this makes it easy to bridge between async promise-based code, and single-thread code.",
   "main": "./bin/promise-value.js",
   "repository": {

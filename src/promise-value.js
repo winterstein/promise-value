@@ -2,7 +2,7 @@
 /**
  * 
  * @param {*} valueOrPromise 
- * @returns {value: ?Object, promise: !Promise} The return is never null, and the promise part is always set.
+ * @returns {value: ?Object, promise: !Promise, error: ?Object} The return is never null, and the promise part is always set.
  * 	The behaviour depends on valueOrPromise:
  * 	If it's a value -> resolved Promise
  * * 	If it's a Promise (or thenable) -> the input Promise
@@ -10,8 +10,10 @@
  */
 function pv(valueOrPromise) {
 	if (valueOrPromise===null || valueOrPromise===undefined) {
+		const err = new Error("null value");
 		return {
-			promise: Promise.reject(new Error("null value"))
+			error: err,
+			promise: Promise.reject(err)
 		};
 	}
 	// NB: Promise.resolve() can be used with Promises without nesting	
@@ -23,6 +25,13 @@ function pv(valueOrPromise) {
 			vp.value = r;
 			return r;
 		});
+		// also store any error
+		if (typeof(valueOrPromise.fail) === 'function') {		
+			valueOrPromise.fail(err => {
+				vp.error = err;
+				return err;
+			});
+		}
 		return vp;	
 	}
 	// It's a value - return now
