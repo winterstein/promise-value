@@ -34,16 +34,12 @@ function pv(valueOrPromise) {
 			}, 
 			function (err) {				
 				// also store any error
-				vp.error = err;
+				vp.error = err; // maybe we should store err.statusText? Nah, this is a wrapper, lets just pass on whatever we get.
 				vp.resolved = true;
 				return err;
 			});
-		// old error code		
-		// if (typeof valueOrPromise.fail === 'function') {
-		// 	valueOrPromise.fail(function (err) {
-		// 	});
-		// }
 		vp.promise = _promise;		
+		return vp;
 	}
 	// It's a value - return now
 	return {

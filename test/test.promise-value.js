@@ -24,3 +24,19 @@ SJTest.run({
 		assert(a.resolved, a);
 	}
 });
+
+SJTest.run({'PromiseValue: chain on resolved':
+	function() {
+		let p = $.get("https://bbc.co.uk");
+		let a = pv(p);
+		assert( ! a.value, a);
+		assert( ! a.resolved);
+		assert(a.promise.then);
+		a.promise.always(r => {
+			assert(a.resolved);
+			console.log("resolved :)", r, a.value, a.error);
+			return ":)";
+		});
+		return "...";
+	}
+});
