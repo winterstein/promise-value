@@ -23,22 +23,27 @@ function pv(valueOrPromise) {
 	// NB: Promise.resolve() can be used with Promises without nesting	
 	if (typeof(valueOrPromise.then) === 'function') {		
 		// Having then() is the only real requirement for a Promise
-		const vp = {promise:valueOrPromise, resolved:false};
+		var vp = {resolved: false};
 		// set the value when we have it
-		valueOrPromise.then(r => {
-			vp.value = r;
-			vp.resolved = true;
-			return r;
-		});
-		// also store any error
-		if (typeof(valueOrPromise.fail) === 'function') {		
-			valueOrPromise.fail(err => {
+		// NB: the promise we expose is _after_ resolved and value gets set
+		let _promise = valueOrPromise.then(
+			function (r) {
+				vp.value = r;
+				vp.resolved = true;
+				return r;
+			}, 
+			function (err) {				
+				// also store any error
 				vp.error = err;
 				vp.resolved = true;
 				return err;
 			});
-		}
-		return vp;	
+		// old error code		
+		// if (typeof valueOrPromise.fail === 'function') {
+		// 	valueOrPromise.fail(function (err) {
+		// 	});
+		// }
+		vp.promise = _promise;		
 	}
 	// It's a value - return now
 	return {
