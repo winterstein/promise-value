@@ -28,6 +28,9 @@ function pv(valueOrPromise) {
 		// NB: the promise we expose is _after_ resolved and value gets set
 		let _promise = valueOrPromise.then(
 			function (r) {
+				// Warning: this on-success function will also be called if the server
+				// returns a code 200 (OK http) but {status:error} (JSend error) response.
+				// Handling this should be done in the Ajax layer.
 				vp.value = r;
 				vp.resolved = true;
 				return r;
