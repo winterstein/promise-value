@@ -40,3 +40,18 @@ SJTest.run({'PromiseValue: chain on resolved':
 		return "...";
 	}
 });
+
+SJTest.run({'PromiseValue: chain on fail':
+	function() {
+		let ajaxGet = $.get("http://fdasjhfsd.hfjds.com/dasyuthj")
+		let pvAjaxGet = pv(ajaxGet);
+		pvAjaxGet.promise.then(ok => {
+			console.error("Not OK!");
+			return ok;
+		}, bad => {
+			console.warn("bad");
+			return bad;
+		});
+		
+	}
+});
