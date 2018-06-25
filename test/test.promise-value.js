@@ -45,13 +45,20 @@ SJTest.run({'PromiseValue: chain on fail':
 	function() {
 		let ajaxGet = $.get("http://fdasjhfsd.hfjds.com/dasyuthj")
 		let pvAjaxGet = pv(ajaxGet);
-		pvAjaxGet.promise.then(ok => {
-			console.error("Not OK!");
+		let promise2 = pvAjaxGet.promise.then(ok => {
+			console.error("Not OK!", ok);
 			return ok;
-		}, bad => {
-			console.warn("bad");
-			return bad;
+		}).catch(bad => {
+			console.warn("bad", bad);
+			throw bad;
 		});
-		
+		let pv2 = pv(promise2);
+		pv2.promise.then(ok => {
+			console.error("Level 2: Not OK!", ok);
+			return ok;
+		}).catch(bad => {
+			console.warn("Level 2 bad", bad);
+			throw bad;
+		});
 	}
 });
