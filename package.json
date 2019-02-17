@@ -1,6 +1,6 @@
 {
   "name": "promise-value",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "A tiny wrapper for Promise to carry a promise and (if known) a value, plus a resolved flag -- this makes it easy to bridge between async promise-based code, and single-thread code.",
   "main": "./bin/promise-value.js",
   "repository": {
@@ -26,6 +26,7 @@
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
+	"babel-preset-stage-2": "^6.24.1",
     "babel-preset-es2015": "^6.24.1",
     "babel-register": "^6.26.0",	
     "babel-plugin-transform-class-properties": "^6.24.1"
