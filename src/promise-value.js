@@ -35,8 +35,9 @@ class PromiseValue {
 	 */
 	constructor(valueOrPromise) {
 		if (valueOrPromise===null || valueOrPromise===undefined) {
-			this.error = new Error("null value");
-			this.promise = Promise.reject(this.error);
+			const e = new Error("null value");
+			this.error = e;
+			this.promise = Promise.reject(e);
 			this.resolved = true;
 			return;
 		}
