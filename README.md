@@ -8,10 +8,10 @@ Use-cases: e.g. within a React render() function.
 
 ### Example code
 
-	import pv from 'promise-value';
+	import PromiseValue from 'promise-value';
 
 	// Make from a promise, e.g. an ajax call
-	let pvAjax = pv($.get("https://bbc.co.uk"));
+	let pvAjax = new PromiseValue($.get("https://bbc.co.uk"));
 	
 	console.log(pvAjax.resolved, " = false");
 
@@ -23,7 +23,7 @@ Use-cases: e.g. within a React render() function.
 	// Error handling? just check pvAjax.error
 
 	// Or you can make a PromiseValue directly from a value
-	let pvInstant = pv("hello");
+	let pvInstant = new PromiseValue("hello");
 	
 	console.log(pvInstant.resolved, " = true");
 	
@@ -37,39 +37,52 @@ Use-cases: e.g. within a React render() function.
 
 ### React Example: Using PromiseValue to manage web requests inside a render function
 
-	import pv from 'promise-value';
+	import React, {useState} from 'react';
+	import PromiseValue from 'promise-value';
+	import $ from 'jquery';
 
 	const MyAjaxWidget = () => {
 		// What is the state?
 		let [pvMyAjaxData, setpvMyAjaxData] = useState();
+		// Hack: a dummy state var to trigger a react update
+		let [dummy, setDummy] = useState();
 		if ( ! pvMyAjaxData) {
-			// Start the ajax call!
-			const pAjax = $.get("http://mysite.com/endpoint?foo=blah");
-			pvMyAjaxData = pv(pAjax);
-			setpvMyAjaxData(pvMyAjaxData);
+			// Start the ajax call
+			const pAjax = $.get("https://mysite.com/endpoint?foo=blah");		
+			pvMyAjaxData = new PromiseValue(pAjax);
+			setpvMyAjaxData(pvMyAjaxData); // Update the state, so we won't keep calling the server
+			// trigger a react render when the response comes back (inc on error)
+			pAjax.then(() => setDummy(":)"), () => setDummy(":("));
 		}
 		// Has the web request come back?
 		if ( ! pvMyAjaxData.resolved) {
 			// ...no -- return a spinner
-			return <span class='spinner'>Loading...</span>;
+			return <div className='spinner'>Loading...</div>;
 		}
-		// ...yes! We have data
-		const myAjaxData = pvMyAjaxData.value;
-		return <div>Lovely data! {JSON.stringify(myAjaxData)}</div>;
+		// Error handling
+		if (pvMyAjaxData.error) return <div>Web Request Failed :( {JSON.stringify(pvMyAjaxData.error)}</div>;
+		// yes! We have data
+		return <div>Lovely data! {JSON.stringify(pvMyAjaxData.value)}</div>;
 	};
-
 
 ## Documentation
 
-function pv(valueOrPromise)
+	class PromiseValue {
+		/** @type {!Promise} */
+		promise;
+		/** @type {!boolean} */
+		resolved;
+		/** @type {?Object} */
+		value;
+		/** @type {?Error} */
+		error;
+	}
 
-@param {*} valueOrPromise 
-@returns {value: ?Object, promise: !Promise, error: ?Object, resolved: boolean} 
+Call it like this: `new PromiseValue(x)` where `x` can be a Promise or a value.
 
-The return is never null, and the promise part is always set.
-The behaviour depends on valueOrPromise:
+The promise part of a PromiseValue is always set. The behaviour depends on the input `x`:
 
- - If it's a value -> resolved Promise
+ - If it's a value -> you'll have a resolved Promise
  - If it's a Promise (or thenable) -> the input Promise
  - null/undefined -> rejected Promise
 
