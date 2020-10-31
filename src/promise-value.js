@@ -21,6 +21,11 @@ class PromiseValue {
 	/** @type {?Object} */
 	value;
 
+	/** @type {?Function} Only set by `PromiseValue.pending` Call this with a value to resolve the PV. */
+	resolve;
+	/** @type {?Function} Only set by `PromiseValue.pending` Call this with an error to reject the PV. */
+	reject;
+
 	/**
 	 * @param {*} valueOrPromise 
 	 * @returns {value: ?Object, promise: !Promise, error: ?Object, resolved: boolean} 
@@ -75,4 +80,35 @@ class PromiseValue {
 
 };
 
+/**
+ * Create a pending PV, which you manually set to be fulfilled
+ * @returns {PromiseValue}
+ */
+PromiseValue.pending = () => {
+	const rr = {}
+	const p = new Promise((resolve, reject) => {
+		console.log("resolve-reject", resolve, reject);
+		rr.resolve = resolve;
+		rr.reject = reject;
+	});
+	let pv = new PromiseValue(p);
+	pv.resolve = v => {
+		pv.value = v;
+		pv.resolved  = true;
+		rr.resolve(v);		
+	};
+	pv.reject = err => {
+		pv.error = err;
+		pv.resolved  = true;
+		rr.reject(err);
+	};
+	return pv;
+};
+
+// NB: comment out to run test.promise-value.html
 export default PromiseValue;
+
+// Uncomment for tests
+// window.pv = PromiseValue;
+// window.PromiseValue = PromiseValue;
+
