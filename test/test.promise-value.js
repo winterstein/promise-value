@@ -1,4 +1,7 @@
 
+// Hm - I cant get this to work with npm export style pv.
+//const { default: PromiseValue } = require("../src/promise-value");
+
 SJTest.run({
 	'PromiseValue: pending - OK': () => {
 		let a = pv.pending();
@@ -91,5 +94,15 @@ SJTest.run({'PromiseValue: chain on fail':
 			console.warn("Level 2 bad", bad);
 			throw bad;
 		});
+	}
+});
+
+
+SJTest.run({'PromiseValue: Double Wrap':
+	function() {
+		let pv = PromiseValue.pending();
+		let pv2 = new PromiseValue(pv);
+		pv.resolve(":)");
+		return pv2.value;
 	}
 });

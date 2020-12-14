@@ -39,6 +39,12 @@ class PromiseValue {
 	 * The `resolved` flag records the promise status, and changes to true once the promise is resolved.
 	 */
 	constructor(valueOrPromise) {
+		// Sanity check the input: Has someone mistakenly passed in a PromiseValue?
+		if (valueOrPromise instanceof PromiseValue) {
+			console.warn("Double wrapped PromiseValue", valueOrPromise);
+			// Hm -- keep on trucking?? Or would it better to throw an error?
+			valueOrPromise = valueOrPromise.value || valueOrPromise.promise;
+		}
 		if (valueOrPromise===null || valueOrPromise===undefined) {
 			const e = new Error("null value");
 			this.error = e;
@@ -71,7 +77,7 @@ class PromiseValue {
 				});
 			this.promise = _promise;		
 			return;
-		}
+		}		
 		// It's a value - resolve now
 		this.value = valueOrPromise,
 		this.resolved = true,
@@ -105,10 +111,11 @@ PromiseValue.pending = () => {
 	return pv;
 };
 
-// NB: comment out to run test.promise-value.html
-export default PromiseValue;
+// Uncomment for release
+// Hack: comment out to run test.promise-value.html
+// export default PromiseValue;
 
-// Uncomment for tests
-// window.pv = PromiseValue;
-// window.PromiseValue = PromiseValue;
+// Hack: Uncomment for tests
+window.pv = PromiseValue;
+window.PromiseValue = PromiseValue;
 
