@@ -87,6 +87,18 @@ class PromiseValue {
 };
 
 /**
+ * Convenience to call `then` on the promise and rewrap the result
+ * @param {!PromiseValue} pv 
+ * @param {Function} onResolve 
+ * @param {?Function} onReject 
+ * @returns {!PromiseValue} a new PV with the promise pv.promise.then
+ */
+PromiseValue.then = (pv, onResolve, onReject) => {	
+	const p2 = pv.promise.then(onResolve, onReject);
+	return new PromiseValue(p2);
+};
+
+/**
  * Create a pending PV, which you manually set to be fulfilled
  * @returns {PromiseValue}
  */
@@ -114,8 +126,3 @@ PromiseValue.pending = () => {
 // Uncomment for release
 // Hack: comment out to run test.promise-value.html
 export default PromiseValue;
-
-// Hack: Uncomment for tests
-// window.pv = PromiseValue;
-// window.PromiseValue = PromiseValue;
-

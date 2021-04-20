@@ -1,6 +1,8 @@
 
 // Hm - I cant get this to work with npm export style pv.
-//const { default: PromiseValue } = require("../src/promise-value");
+// const { default: PromiseValue } = require("../src/promise-value");
+
+const pv = PromiseValue;
 
 SJTest.run({
 	'PromiseValue: pending - OK': () => {
@@ -70,6 +72,27 @@ SJTest.run({'PromiseValue: chain on resolved':
 			assert(a.resolved);
 			console.log("resolved :)", r, a.value, a.error);
 			return ":)";
+		});
+		return "...";
+	}
+});
+
+
+SJTest.run({'PromiseValue: conveniently chain on resolved':
+	function() {
+		let p = $.get("https://bbc.co.uk");
+		let a = new pv(p);
+		assert( ! a.value, a);
+		assert( ! a.resolved);
+		assert(a.promise.then);
+		let b = PromiseValue.then(a, r => {
+			assert(a.resolved);
+			console.log("resolved :)", r, a.value, a.error);
+			return ":)";
+		}, r => {
+			assert(a.resolved);
+			console.log("no BBC :(", r, a.value, a.error);
+			return ":/";
 		});
 		return "...";
 	}
