@@ -18,7 +18,11 @@ class PromiseValue {
 	promise;
 	/** @type {!boolean} */
 	resolved;
-	/** @type {?Object} */
+	/** 
+	 * @type {?Object} The result from the promise.
+	 * 
+	 * Note: If pending() is used, then is possible for `value` to be null. 
+	*/
 	value;
 
 	/** @type {?Function} Only set by `PromiseValue.pending` Call this with a value to resolve the PV. */
@@ -106,20 +110,18 @@ PromiseValue.then = (pv, onResolve, onReject) => {
 	if (pv._then) {
 		return pv._then;
 	}
-	// resolved? Make an already resolved response (otherwise it wouldn't resolve until a moment later)
+	// Input is resolved? Make an already resolved response (otherwise it wouldn't resolve until a moment later)
 	if (pv.resolved) {
+		let pv2 = PromiseValue.pending(); // NB: this allows for thenV = null without an ugly error message in the console
+		pv._then = pv2;		
 		if (pv.error) {
-			const err = onReject? onReject(pv.value) : pv.value;
-			const pv2 = new PromiseValue(null); // meh, this will do
-			pv2.error = err;
-			pv._then = pv2;
-			return pv2;
+			const thenErr = onReject? onReject(pv.error) : pv.error;
+			pv2.reject(thenErr);
 		} else {
 			let thenV = onResolve? onResolve(pv.value) : pv.value;
-			let pv2 = new PromiseValue(thenV);
-			pv._then = pv2;
-			return pv2;
-		}	
+			pv2.resolve(thenV);
+		}
+		return pv2;
 	}
 	// ...then...
 	const p2 = pv.promise.then(onResolve, onReject);	

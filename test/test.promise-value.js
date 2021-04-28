@@ -128,6 +128,45 @@ SJTest.run({'PromiseValue.then: already resolved':
 	}
 });
 
+SJTest.run({'PromiseValue.then: already an error':
+	function() {
+		let v = null;
+		let a = new pv(v);
+		assert( a.resolved);
+		assert(a.promise.then);
+		let b = PromiseValue.then(a, r => {
+			assert(a.resolved);
+			console.log("resolved :)", r, a.value, a.error);
+			return ":)";
+		}, r => {
+			assert(a.resolved);
+			console.log("no go :(", r, a.value, a.error);
+			return ":/";
+		});
+		assert(b.resolved);
+		assert( ! b.value);
+		return b;
+	}
+});
+
+
+SJTest.run({'PromiseValue.then: null':
+	function() {
+		let v = "foo";
+		let a = new pv(v);
+		assert( a.resolved);
+		assert(a.promise.then);
+		let b = PromiseValue.then(a, r => {
+			console.log("then null :)");
+		});
+		assert(b.resolved);
+		assert( ! b.error);
+		assert( ! b.value); // odd but right
+		return b;
+	}
+});
+
+
 SJTest.run({'PromiseValue: chain on fail':
 	function() {
 		let ajaxGet = $.get("http://fdasjhfsd.hfjds.com/dasyuthj")
