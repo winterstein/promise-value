@@ -87,15 +87,45 @@ class PromiseValue {
 };
 
 /**
- * Convenience to call `then` on the promise and rewrap the result
+ * Convenience to call `then` on the promise and rewrap the result.
+ * 
+ * Differences from `Promise.then` (added to avoid gotchas): 
+ * 
+ * 1. As a safety guard against repeated calls (e.g. in React rendering), only the first call will have any effect for a given input PV.
+ * Repeated calls will return the cached PV from the first call. Which is usually helpful - but does affect how you can chain a set of PV.then()s.
+ * 
+ * 2. If the input is resolved, then the output is also instantly resolved. By contrast, a Promise.then in this case would start unresolved, then resolve a moment later.
+ * 
  * @param {!PromiseValue} pv 
  * @param {Function} onResolve 
  * @param {?Function} onReject 
  * @returns {!PromiseValue} a new PV with the promise pv.promise.then
  */
 PromiseValue.then = (pv, onResolve, onReject) => {	
-	const p2 = pv.promise.then(onResolve, onReject);
-	return new PromiseValue(p2);
+	// safety against repeated calls 
+	if (pv._then) {
+		return pv._then;
+	}
+	// resolved? Make an already resolved response (otherwise it wouldn't resolve until a moment later)
+	if (pv.resolved) {
+		if (pv.error) {
+			const err = onReject? onReject(pv.value) : pv.value;
+			const pv2 = new PromiseValue(null); // meh, this will do
+			pv2.error = err;
+			pv._then = pv2;
+			return pv2;
+		} else {
+			let thenV = onResolve? onResolve(pv.value) : pv.value;
+			let pv2 = new PromiseValue(thenV);
+			pv._then = pv2;
+			return pv2;
+		}	
+	}
+	// ...then...
+	const p2 = pv.promise.then(onResolve, onReject);	
+	let pv2 = new PromiseValue(p2);
+	pv._then = pv2;
+	return pv2;
 };
 
 /**
