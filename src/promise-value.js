@@ -74,10 +74,7 @@ class PromiseValue {
 				}, 
 				function (err) {				
 					// oh dear - store the error
-					vp.error = err;
-					if ( ! err instanceof Error && ! (err && err.stack)) {
-						vp.error = new Error(err? err.responseText || err.statusText || err.status || ""+err : "");
-					}
+					setError(vp, err);
 					vp.resolved = true;
 					// carry on error-handling if the promise has any catches
 					throw err;
@@ -133,6 +130,14 @@ PromiseValue.then = (pv, onResolve, onReject) => {
 	return pv2;
 };
 
+const setError = (pv, err) => {
+	if (err instanceof Error || (err && err.stack)) {
+		pv.error = err;
+		return;
+	}
+	pv.error = new Error(err? (err.responseText || err.statusText || err.status || ""+err) : "");	
+};
+
 /**
  * Create a pending PV, which you manually set to be fulfilled
  * @returns {PromiseValue}
@@ -151,7 +156,7 @@ PromiseValue.pending = () => {
 		rr.resolve(v);		
 	};
 	pv.reject = err => {
-		pv.error = err;
+		setError(pv, err);
 		pv.resolved  = true;
 		rr.reject(err);
 	};
@@ -160,4 +165,4 @@ PromiseValue.pending = () => {
 
 // Uncomment for release
 // Hack: comment out to run test.promise-value.html
-export default PromiseValue;
+// export default PromiseValue;
