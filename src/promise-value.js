@@ -74,8 +74,10 @@ class PromiseValue {
 				}, 
 				function (err) {				
 					// oh dear - store the error
-					let error = new Error(err.responseText || err.statusText || err.status);
-					vp.error = error;
+					vp.error = err;
+					if ( ! err instanceof Error && ! (err && err.stack)) {
+						vp.error = new Error(err? err.responseText || err.statusText || err.status || ""+err : "");
+					}
 					vp.resolved = true;
 					// carry on error-handling if the promise has any catches
 					throw err;
