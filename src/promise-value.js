@@ -73,8 +73,9 @@ class PromiseValue {
 					return r;
 				}, 
 				function (err) {				
-					// also store any error
-					vp.error = err; // maybe we should store err.statusText? Nah, this is a wrapper, lets just pass on whatever we get.
+					// oh dear - store the error
+					let error = new Error(err.responseText || err.statusText || err.status);
+					vp.error = error;
 					vp.resolved = true;
 					// carry on error-handling if the promise has any catches
 					throw err;
