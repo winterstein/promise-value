@@ -165,4 +165,4 @@ PromiseValue.pending = () => {
 
 // Uncomment for release
 // Hack: comment out to run test.promise-value.html
-// export default PromiseValue;
+export default PromiseValue;
