@@ -130,12 +130,24 @@ PromiseValue.then = (pv, onResolve, onReject) => {
 	return pv2;
 };
 
+/**
+ * Make error formats consistent
+ * @param {PromiseValue} pv 
+ * @param {Error|JSend|String|Object} err 
+ */
 const setError = (pv, err) => {
-	if (err instanceof Error || (err && err.stack)) {
+	if (err===undefined || err===null) err = "";
+	// Is it an Error? instanceof will mostly work, but not across windows -- so also do duck-typing
+	// See https://stackoverflow.com/a/30469297/346629
+	if (err instanceof Error || err.stack) {
 		pv.error = err;
 		return;
 	}
-	pv.error = new Error(err? (err.responseText || err.statusText || err.status || ""+err) : "");	
+	// Handle ajax xhr or JSend or String/number/whatever
+	const msg = err.responseText || err.statusText || err.message || err.status || ""+err;
+	pv.error = new Error(msg);	
+	// JSend? Keep `data` if we have it
+	pv.error.data = err.data;
 };
 
 /**
