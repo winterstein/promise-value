@@ -101,8 +101,8 @@ class PromiseValue {
  * 2. If the input is resolved, then the output is also instantly resolved. By contrast, a Promise.then in this case would start unresolved, then resolve a moment later.
  * 
  * @param {!PromiseValue} pv 
- * @param {Function} onResolve 
- * @param {?Function} onReject 
+ * @param {Function} onResolve input:value
+ * @param {?Function} onReject input:error
  * @returns {!PromiseValue} a new PV with the promise pv.promise.then
  */
 PromiseValue.then = (pv, onResolve, onReject) => {	
@@ -140,7 +140,7 @@ const setError = (pv, err) => {
 	// Is it an Error? instanceof will mostly work, but not across windows -- so also do duck-typing
 	// See https://stackoverflow.com/a/30469297/346629
 	if (err instanceof Error || err.stack) {
-		pv.error = err;
+		pv.error = err;PromiseValue.pending = () => {
 		return;
 	}
 	// Handle ajax xhr or JSend or String/number/whatever
@@ -151,8 +151,8 @@ const setError = (pv, err) => {
 };
 
 /**
- * Create a pending PV, which you manually set to be fulfilled
- * @returns {PromiseValue}
+ * Create a pending PV, which you manually set to be fulfilled via pv.resolve(value) or pv.reject(error)
+ * @returns {PromiseValue} pv
  */
 PromiseValue.pending = () => {
 	const rr = {}
@@ -160,7 +160,7 @@ PromiseValue.pending = () => {
 		console.log("resolve-reject", resolve, reject);
 		rr.resolve = resolve;
 		rr.reject = reject;
-	});
+	});PromiseValue.pending = () => {
 	let pv = new PromiseValue(p);
 	pv.resolve = v => {
 		pv.value = v;
@@ -174,6 +174,16 @@ PromiseValue.pending = () => {
 	};
 	return pv;
 };
+
+/**
+ *  
+ */
+PromiseValue.all = (promisesOrValues) => {
+	let pva = PromiseValue.pending();
+	let pvs = promisesOrValues.map();
+	return pva;
+};
+
 
 // Uncomment for release
 // Hack: comment out to run test.promise-value.html
