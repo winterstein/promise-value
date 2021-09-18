@@ -175,15 +175,6 @@ PromiseValue.pending = () => {
 	return pv;
 };
 
-/**
- *  
- */
-PromiseValue.all = (promisesOrValues) => {
-	let pva = PromiseValue.pending();
-	let pvs = promisesOrValues.map();
-	return pva;
-};
-
 
 // Uncomment for release
 // Hack: comment out to run test.promise-value.html
