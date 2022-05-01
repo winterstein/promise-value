@@ -14,6 +14,10 @@ class PromiseValue {
 
 	/** @type {?Error} */
 	error;
+	/** 
+	 * @type {?Object} an interim value for value, e.g. a local memory whilst we fetch a fresh value from the server
+	*/
+	interim;
 	/** @type {!Promise} */
 	promise;
 	/** @type {!boolean} */
@@ -140,7 +144,7 @@ const setError = (pv, err) => {
 	// Is it an Error? instanceof will mostly work, but not across windows -- so also do duck-typing
 	// See https://stackoverflow.com/a/30469297/346629
 	if (err instanceof Error || err.stack) {
-		pv.error = err;PromiseValue.pending = () => {
+		pv.error = err;
 		return;
 	}
 	// Handle ajax xhr or JSend or String/number/whatever
@@ -175,6 +179,11 @@ PromiseValue.pending = () => {
 	return pv;
 };
 
+/**
+ * @param {PromiseValue|Object} valueOrPromise 
+ * @returns {boolean} true if this is a ProimiseValue;
+ */
+PromiseValue.isa = valueOrPromise => valueOrPromise instanceof PromiseValue;
 
 // Uncomment for release
 // Hack: comment out to run test.promise-value.html
