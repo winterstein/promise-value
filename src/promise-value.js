@@ -161,7 +161,6 @@ const setError = (pv, err) => {
 PromiseValue.pending = () => {
 	const rr = {}
 	const p = new Promise((resolve, reject) => {
-		console.log("resolve-reject", resolve, reject);
 		rr.resolve = resolve;
 		rr.reject = reject;
 	});
