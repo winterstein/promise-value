@@ -164,7 +164,7 @@ PromiseValue.pending = () => {
 		console.log("resolve-reject", resolve, reject);
 		rr.resolve = resolve;
 		rr.reject = reject;
-	});PromiseValue.pending = () => {
+	});
 	let pv = new PromiseValue(p);
 	pv.resolve = v => {
 		pv.value = v;
