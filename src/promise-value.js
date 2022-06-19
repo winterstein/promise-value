@@ -149,7 +149,7 @@ const setError = (pv, err) => {
 	}
 	// Handle ajax xhr or JSend or String/number/whatever
 	const msg = err.responseText || err.statusText || err.message || err.status || ""+err;
-	pv.error = new Error(msg);	
+	pv.error = new Error('PromiseValue rejected: '+msg);	
 	// JSend? Keep `data` if we have it
 	pv.error.data = err.data;
 };
